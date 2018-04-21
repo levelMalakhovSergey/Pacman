@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.IO;
+using NLog;
+
 
 namespace PacmanWinForm2
 {
@@ -22,12 +25,11 @@ namespace PacmanWinForm2
         public static int LifeAfterGhost2 = 0;
         public static int LifeAfterGhost3 = 0;
         public static int colvoOfEat = 10;
-        public static int rightsite = 0;
-        public static int leftsite = 0;
-        public static int topSite = 0;
-        public static int botsite = 0;
         public static int[,] GhostsPlases = new int[3, 2];
         public static int[,] table = new int[20, 20];
+        public static int PacmanX = 0;
+        public static int PacmanY = 0;
+
         public static void DrawTable(int[,] table, System.IntPtr handle)
         {
             int x = 0;
@@ -60,393 +62,155 @@ namespace PacmanWinForm2
 
                         gr.FillRectangle(Brushes.Blue, x, y, 10, 10);
                     }
+                    if (table[i, j] == value.Pacman)
+                    {
+
+                        gr.FillRectangle(Brushes.Red, x, y, 10, 10);
+                    }
                     x += 10;
                 }
                 x = 0;
                 y += 10;
             }
         }
-        //public static string[,] Move1(KeyEventArgs pressedKey, string[,] table, ref int x, ref int y)
-        //{                  
-        //    if (pressedKey.KeyData == Keys.Right)
+        public static void Move1(KeyEventArgs pressedKey )
+        {
+            Sell value = new Sell();
+            logger.Info("MOVE");
+            logger.Info("MOVE");
+            logger.Info("MOVE");
+            if (table[PacmanX,PacmanY]!= value.Wall)
+            {
+                PacmanX -= 1;
+                logger.Info("X- " + PacmanX);
+                logger.Info("Y- " + PacmanY);
+                if (pressedKey.KeyData==Keys.Up)
+                {
+                    if (table[PacmanX - 1, PacmanY] !=value.Wall)
+                    {                       
+                        if (table[PacmanX - 1, PacmanY] ==value.Eat)
+                        {
+                            colvoOfEat++;
+                        }
+                        else if (table[PacmanX - 1, PacmanY] == value.Ghost)
+                        {
+                            MessageBox.Show("Game Over");
+                            MessageBox.Show("You lose");
+                            return;
+                        }
+                        table[PacmanX - 1, PacmanY] = value.Pacman;
+                        
+                        
+                        
+                    }
+                }
+            }           
+        }
+        //public static void WriteMessage(string InputString)
+        //{
+        //    using (StreamWriter sw = new StreamWriter("output.txt"))
         //    {
-        //        if (y != 9)
+        //        WriteList.Add(InputString);
+        //        for (int i = 0; i < WriteList.Count-1; i++)
         //        {
-        //            if (table[y + 1, x] == "* ")
-        //            {
-        //                botsite = 1;
-        //            }
-        //            else
-        //            {
-        //                botsite = 0;
-        //            }
-        //        }
-        //        if (x != 9)
-        //        {
-        //            if (table[y, x + 1] == "* ")
-        //            {
-        //                rightsite = 1;
-
-        //            }
-        //            else
-        //            {
-        //                rightsite = 0;
-        //            }
-        //        }
-        //        if (x != 0)
-        //        {
-        //            if (table[y, x - 1] == "* ")
-        //            {
-        //                leftsite = 1;
-        //            }
-        //            else
-        //            {
-        //                leftsite = 0;
-        //            }
-        //        }
-
-        //        if (y != 0)
-        //        {
-        //            if (table[y - 1, x] == "* ")
-        //            {
-        //                topSite = 1;
-        //            }
-        //            else
-        //            {
-        //                topSite = 0;
-        //            }
-        //        }
-
-
-
-
-
-
-        //        x++;
-        //        if (x < 0)
-        //        {
-        //            x = 0;
-        //        }
-        //        if (x > 9)
-        //        {
-        //            x = 9;
-        //        }
-        //        if (x < 10)
-        //        {
-        //            if (table[y, x] != "0 " && x != 9)
-        //            {
-        //                table[y, x] = "@ ";
-        //                if (x != 0 && table[y, x - 1] != "0 ")
-        //                {
-        //                    table[y, x - 1] = "  ";
-        //                }//Зачистка   
-        //                if (rightsite == 1)
-        //                {
-        //                    colvoOfEat--;
-        //                }
-
-
-        //            }
-        //            else
-        //            {
-        //                x--;
-        //            }
-
+        //            sw.WriteLine(WriteList[i]);
         //        }
 
 
         //    }
-        //    if (pressedKey.Key == ConsoleKey.DownArrow)
-        //    {
-
-        //        if (y != 9)
-        //        {
-        //            if (table[y + 1, x] == "* ")
-        //            {
-        //                botsite = 1;
-        //            }
-        //            else
-        //            {
-        //                botsite = 0;
-        //            }
-        //        }
-        //        if (x != 9)
-        //        {
-        //            if (table[y, x + 1] == "* ")
-        //            {
-        //                rightsite = 1;
-
-        //            }
-        //            else
-        //            {
-        //                rightsite = 0;
-        //            }
-        //        }
-        //        if (x != 0)
-        //        {
-        //            if (table[y, x - 1] == "* ")
-        //            {
-        //                leftsite = 1;
-        //            }
-        //            else
-        //            {
-        //                leftsite = 0;
-        //            }
-        //        }
-        //        if (y != 0)
-        //        {
-        //            if (table[y - 1, x] == "* ")
-        //            {
-        //                topSite = 1;
-        //            }
-        //            else
-        //            {
-        //                topSite = 0;
-        //            }
-        //        }
-        //        y++;
-        //        if (y < 0)
-        //        {
-        //            y = 0;
-        //        }
-        //        if (y > 9)
-        //        {
-        //            y = 9;
-        //        }
-        //        if (y < 10)
-        //        {
-        //            if (table[y, x] != "0 " && y != 9)
-        //            {
-        //                table[y, x] = "@ ";
-        //                if (y != 0 && table[y - 1, x] != "0 ")
-        //                {
-        //                    table[y - 1, x] = "  ";
-        //                }//Зачистка
-        //                if (botsite == 1)
-        //                {
-        //                    colvoOfEat--;
-        //                }
-
-        //            }
-        //            else
-        //            {
-        //                y--;
-        //            }
-        //        }
-        //    }
-        //    if (pressedKey.Key == ConsoleKey.UpArrow)
-        //    {
-        //        if (y != 9)
-        //        {
-        //            if (table[y + 1, x] == "* ")
-        //            {
-        //                botsite = 1;
-        //            }
-        //            else
-        //            {
-        //                botsite = 0;
-        //            }
-        //        }
-        //        if (x != 9)
-        //        {
-        //            if (table[y, x + 1] == "* ")
-        //            {
-        //                rightsite = 1;
-
-        //            }
-        //            else
-        //            {
-        //                rightsite = 0;
-        //            }
-        //        }
-        //        if (x != 0)
-        //        {
-        //            if (table[y, x - 1] == "* ")
-        //            {
-        //                leftsite = 1;
-        //            }
-        //            else
-        //            {
-        //                leftsite = 0;
-        //            }
-        //        }
-        //        if (y != 0)
-        //        {
-        //            if (table[y - 1, x] == "* ")
-        //            {
-        //                topSite = 1;
-        //            }
-        //            else
-        //            {
-        //                topSite = 0;
-        //            }
-        //        }
-        //        y--;
-        //        if (y < 0)
-        //        {
-        //            y = 0;
-        //        }
-        //        if (y > 9)
-        //        {
-        //            y = 9;
-        //        }
-        //        if (y >= 0)
-        //        {
-        //            if (table[y, x] != "0 " && y != 9)
-        //            {
-        //                table[y, x] = "@ ";
-
-        //                if (y != columns && table[y + 1, x] != "0 ")
-        //                {
-        //                    table[y + 1, x] = "  ";
-        //                }//Зачистка
-        //                if (topSite == 1)
-        //                {
-        //                    colvoOfEat--;
-        //                }
-
-
-        //            }
-        //            else
-        //            {
-        //                y++;
-        //            }
-        //        }
-
-        //    }
-        //    if (pressedKey.Key == ConsoleKey.LeftArrow)
-        //    {
-
-        //        if (y != 9)
-        //        {
-        //            if (table[y + 1, x] == "* ")
-        //            {
-        //                botsite = 1;
-        //            }
-        //            else
-        //            {
-        //                botsite = 1;
-        //            }
-        //        }
-        //        if (x != 9)
-        //        {
-        //            if (table[y, x + 1] == "* ")
-        //            {
-        //                rightsite = 1;
-
-        //            }
-        //            else
-        //            {
-        //                rightsite = 0;
-        //            }
-        //        }
-        //        if (x != 0)
-        //        {
-        //            if (table[y, x - 1] == "* ")
-        //            {
-        //                leftsite = 1;
-        //            }
-        //            else
-        //            {
-        //                leftsite = 0;
-        //            }
-        //        }
-        //        if (y != 0)
-        //        {
-        //            if (table[y - 1, x] == "* ")
-        //            {
-        //                topSite = 1;
-        //            }
-        //            else
-        //            {
-        //                topSite = 0;
-        //            }
-        //        }
-
-
-        //        x--;
-
-        //        if (x < 0)
-        //        {
-        //            x = 0;
-        //        }
-        //        if (x > 9)
-        //        {
-        //            x = 9;
-        //        }
-        //        if (x >= 0)
-        //        {
-        //            if (table[y, x] != "0 " && x != 9)
-        //            {
-        //                table[y, x] = "@ ";
-        //                if (x != rows && table[y, x + 1] != "0 ")
-        //                {
-        //                    table[y, x + 1] = "  ";
-        //                }//Зачистка
-        //                if (leftsite == 1)
-        //                {
-        //                    colvoOfEat--;
-        //                }
-
-        //            }
-        //            else
-        //            {
-        //                x++;
-        //            }
-        //        }
-
-        //    }
-        //    return table;
         //}
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger updateLogger = LogManager.GetLogger("UpdateLogger");
         public static void Ghost1Move()
         {
+            
+
+            logger.Info("Start");
             Sell value = new Sell();
             int x = GhostsPlases[0, 0];
             int y = GhostsPlases[0, 1];
-            if (x - 1 == 0||x==0)
+           
+            if (x == 0)
             {
-                r1 = 2;
-            }
-            else
-            if (y - 1 == 0 || y == 0)
-            {
-                r1 = 3;
-            }
-            else
-            if (x + 1 == 19 || x == 19)
-            {
-                r1 = 0;
-            }
-            else
-            if(y + 1 == 19 || y == 19)
+                do
                 {
-                r1 = 1;
+                    r1 = rndGhost.Next(temp);
+                } while (r1==0);
+                logger.Info("Направление -"+r1);
+                LifeAfterGhost1 = 0;
             }
-                
+            else
+            if (y == 0)
+            {
+                do
+                {
+                    r1 = rndGhost.Next(temp);
+                } while (r1 == 1);
+                logger.Info("Направление -" + r1);
+                LifeAfterGhost1 = 0;
+            }
+            else
+            if (x == 19)
+            {
+                do
+                {
+                    r1 = rndGhost.Next(temp);
+                } while (r1 == 2);
+                logger.Info("Направление -" + r1);
+                LifeAfterGhost1 = 0;
+            }
+            else
+            if (y == 19)
+            {
+                do
+                {
+                    r1 = rndGhost.Next(temp);
+                } while (r1 == 3);
+                logger.Info("Направление -" + r1);
+                LifeAfterGhost1 = 0;
+            }
+            
             if (r1 == 0)//Move to Top
             {
-                              
-                if (x >= 0 && x < 19 && y >=0 && y < 19)
-                {x -= 1;
+                logger.Info("Move to Top");
+               
+                
+                if (x > 0 && x <= 19 && y >= 0 && y <= 19)
+                {
+                    x -= 1;
+                    logger.Info("x= " + x);
+                    logger.Info("y= " + y);
                     if (table[x, y] != value.Wall)
-                    {                                             
-                        if (table[x, y] == value.Eat)
+                    {
+                        logger.Info("not wall");
+                        if (LifeAfterGhost1 == 1)
                         {
-                            LifeAfterGhost1 = 1;
-                        }
-                        if (LifeAfterGhost1==1)
-                        {
-                            table[x+1, y] = value.Eat;
+                            
+                            table[x + 1, y] = value.Eat;
+                            logger.Info("table[{0}, {1}] = value.Eat",x+1,y);
+                            logger.Info("LifeAfterGhost1 == 0");
                             LifeAfterGhost1 = 0;
+                            
                         }
                         else
                         {
-                            table[x+1, y] = value.Normal;
+                            
+                            table[x + 1, y] = value.Normal;
+                            logger.Info("LifeAfterGhost1 == 0");
+                            logger.Info("table[{0}, {1}] = value.Normal", x + 1, y);
                         }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost1 = 1;
+                            logger.Info("LifeAfterGhost1 == 1");
+                        }
+                        
 
-                        table[x , y] = value.Ghost;
+                        table[x, y] = value.Ghost;
+                        logger.Info(" table[{0}, {1}]= value.Ghost",x,y);
                         GhostsPlases[0, 0] = x;
                         GhostsPlases[0, 1] = y;
+                        
                     }
                     else
                     {
@@ -457,27 +221,43 @@ namespace PacmanWinForm2
             else
             if (r1 == 1)//Move to left
             {
-                
-                if (x >= 0 && x < 19 && y >= 0 && y < 19)
-                {y -= 1;//Move to left
-                    if (table[x, y ] != value.Wall)
+                logger.Info("Move to Left");
+                if (x >= 0 && x <= 19 && y > 0 && y <= 19)
+                {
+                    y -= 1;//Move to left
+                    
+
+                    logger.Info("x= " + x);
+                    logger.Info("y= " + y);
+                    if (table[x, y] != value.Wall)
                     {
-                        if (table[x , y] == value.Eat)
-                        {
-                            LifeAfterGhost1 = 1;
-                        }
+                        logger.Info("not wall");
                         if (LifeAfterGhost1 == 1)
                         {
-                            table[x, y] = value.Eat;
+                            table[x, y+1] = value.Eat;
+                            logger.Info("table[{0}, {1}] = value.Eat", x , y+1);
+                            logger.Info("LifeAfterGhost1 == 0");
                             LifeAfterGhost1 = 0;
+                           
                         }
                         else
                         {
-                            table[x, y+1] = value.Normal;
+                            table[x, y + 1] = value.Normal;
+                            logger.Info("table[{0}, {1}] = value.Normal", x , y + 1);
+                            
+
                         }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost1 = 1; logger.Info("LifeAfterGhost1 == 1");
+                        }
+
                         table[x, y] = value.Ghost;
+                        
                         GhostsPlases[0, 0] = x;
                         GhostsPlases[0, 1] = y;
+                        
+                        logger.Info(" table[{0}, {1}]= value.Ghost", x, y);
                     }
                     else
                     {
@@ -488,27 +268,38 @@ namespace PacmanWinForm2
             else
             if (r1 == 2) //Move to Bot
             {
-                
-                if (x >= 0 && x < 19 && y >= 0 && y < 19)
-                {x += 1; //Move to Bot
-                    if (table[x , y] != value.Wall)
+                logger.Info("Move to Bot");
+                if (x >= 0 && x < 19 && y >= 0 && y <= 19)
+                {
+                    x += 1; //Move to Bot
+                    logger.Info("x= " + x);
+                    logger.Info("y= " + y);
+                    if (table[x, y] != value.Wall)
                     {
-                        if (table[x , y] == value.Eat)
-                        {
-                            LifeAfterGhost1 = 1;
-                        }
+                        logger.Info("not wall");
                         if (LifeAfterGhost1 == 1)
                         {
-                            table[x, y] = value.Eat;
+                            table[x-1, y] = value.Eat;
                             LifeAfterGhost1 = 0;
+                            logger.Info("table[{0}, {1}] = value.Eat", x-1, y );
+                            logger.Info("LifeAfterGhost1 == 0");
                         }
                         else
                         {
-                            table[x-1, y] = value.Normal;
+                            table[x - 1, y] = value.Normal;
+                            logger.Info("table[{0}, {1}] = value.Normal", x-1,y );
                         }
-                        table[x , y] = value.Ghost;
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost1 = 1; logger.Info("LifeAfterGhost1 == 1");
+                        }
+
+                        table[x, y] = value.Ghost;
+                        logger.Info(" table[{0}, {1}]= value.Ghost", x, y);
                         GhostsPlases[0, 0] = x;
                         GhostsPlases[0, 1] = y;
+                        logger.Info(" GhostsPlases[0, 0] = " + x);
+                        logger.Info(" GhostsPlases[0, 1] = " + y);
                     }
                     else
                     {
@@ -519,27 +310,36 @@ namespace PacmanWinForm2
             else
             if (r1 == 3) //Move to Right
             {
-                
-                if (x >= 0 && x < 19 && y >= 0 && y < 19)
-                {y+= 1;
+                logger.Info("Move to Right");
+                if (x >= 0 && x <= 19 && y >= 0 && y < 19)
+                {
+                    y += 1;
                     if (table[x, y] != value.Wall)
                     {
-                        if (table[x , y] == value.Eat)
-                        {
-                            LifeAfterGhost1 = 1;
-                        }
+                        logger.Info("not wall");
                         if (LifeAfterGhost1 == 1)
                         {
-                            table[x, y] = value.Eat;
+                            table[x, y-1] = value.Eat;
                             LifeAfterGhost1 = 0;
+                            logger.Info("table[{0}, {1}] = value.Eat", x, y-1);
+                            logger.Info("LifeAfterGhost1 == 0");
                         }
                         else
                         {
-                            table[x, y-1] = value.Normal;
+                            table[x, y - 1] = value.Normal;
+                            logger.Info("table[{0}, {1}] = value.Normal", x, y - 1);
                         }
-                        table[x , y] = value.Ghost;
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost1 = 1; logger.Info("LifeAfterGhost1 == 1");
+                        }
+
+                        table[x, y] = value.Ghost;
+                        logger.Info(" table[{0}, {1}]= value.Ghost", x, y);
                         GhostsPlases[0, 0] = x;
                         GhostsPlases[0, 1] = y;
+                        logger.Info(" GhostsPlases[0, 0] = " + x);
+                        logger.Info(" GhostsPlases[0, 1] = " + y);
                     }
                     else
                     {
@@ -555,147 +355,198 @@ namespace PacmanWinForm2
             Sell value = new Sell();
             int x = GhostsPlases[1, 0];
             int y = GhostsPlases[1, 1];
-            if (x - 1 == 0 || x == 0)
+            if (x == 0)
             {
-                r2 = 2;
+                do
+                {
+                    r2 = rndGhost.Next(temp);
+                } while (r2 == 0);
+                logger.Error("Направление -" + r1);
+                LifeAfterGhost2 = 0;
             }
             else
-            if (y - 1 == 0 || y == 0)
+             if (y == 0)
             {
-                r2 = 3;
+                do
+                {
+                    r2 = rndGhost.Next(temp);
+                } while (r2 == 1);
+                LifeAfterGhost2 = 0; logger.Error("Направление -" + r1);
             }
             else
-            if (x + 1 == 19 || x == 19)
+             if (x == 19)
             {
-                r2 = 0;
+                do
+                {
+                    r2 = rndGhost.Next(temp);
+                } while (r2 == 2);
+                LifeAfterGhost2 = 0; logger.Error("Направление -" + r1);
             }
             else
-            if (y + 1 == 19 || y == 19)
+             if (y == 19)
             {
-                r2 = 1;
+                do
+                {
+                    r2 = rndGhost.Next(temp);
+                } while (r2 == 3);
+                LifeAfterGhost2 = 0; logger.Error("Направление -" + r1);
             }
 
             if (r2 == 0)
             {
-
-                if (x > 0 && x < 19 && y > 0 && y < 19)
+                logger.Error("Move to Top");
+                if (x > 0 && x <= 19 && y >= 0 && y <= 19)
                 {
-                    x -= 1;
+                    x -= 1; logger.Error("x= " + x);
+                    logger.Error("y= " + y);
                     if (table[x, y] != value.Wall)
                     {
-                        if (table[x, y] == value.Eat)
+                        logger.Error("not wall");
+                        if (LifeAfterGhost2 == 1)
                         {
-                            LifeAfterGhost1 = 1;
-                        }
-                        if (LifeAfterGhost1 == 1)
-                        {
-                            table[x, y] = value.Eat;
-                            LifeAfterGhost1 = 0;
+                            table[x+1, y] = value.Eat;
+                            LifeAfterGhost2 = 0;
+                            logger.Error("table[{0}, {1}] = value.Eat", x + 1, y);
+                            logger.Error("LifeAfterGhost2 == 0");
                         }
                         else
                         {
                             table[x + 1, y] = value.Normal;
+                            
+                            logger.Error("table[{0}, {1}] = value.Normal", x + 1, y);
                         }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost2 = 1; logger.Error(" LifeAfterGhost2 = 1");
+                        }
+                        
 
                         table[x, y] = value.Ghost;
                         GhostsPlases[1, 0] = x;
                         GhostsPlases[1, 1] = y;
+                        logger.Error(" table[{0}, {1}]= value.Ghost", x, y);
                     }
                     else
                     {
-                        r2= rndGhost.Next(temp);
+                        r2 = rndGhost.Next(temp);
                     }
                 }
-            }//Move to left
+            }//Move to Top
             else
             if (r2 == 1)
             {
-
-                if (x > 0 && x < 19 && y > 0 && y < 19)
+                logger.Error("Move to Left");
+                if (x >= 0 && x <= 19 && y > 0 && y <= 19)
                 {
-                    y -= 1;
+                    y -= 1; logger.Error("x= " + x);
+                    logger.Error("y= " + y);
                     if (table[x, y] != value.Wall)
                     {
-                        if (table[x, y] == value.Eat)
+                        logger.Error("not wall");
+                        if (LifeAfterGhost2 == 1)
                         {
-                            LifeAfterGhost1 = 1;
-                        }
-                        if (LifeAfterGhost1 == 1)
-                        {
-                            table[x, y] = value.Eat;
-                            LifeAfterGhost1 = 0;
+                            table[x, y+1] = value.Eat;
+                            LifeAfterGhost2 = 0;
+                            logger.Error("table[{0}, {1}] = value.Eat", x, y + 1);
+                            logger.Error("LifeAfterGhost2 == 0");
                         }
                         else
                         {
                             table[x, y + 1] = value.Normal;
+                            logger.Error("table[{0}, {1}] = value.Normal", x, y + 1);
                         }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost2 = 1;
+                            logger.Error(" LifeAfterGhost2 = 1");
+
+
+                        }
+                        
                         table[x, y] = value.Ghost;
                         GhostsPlases[1, 0] = x;
                         GhostsPlases[1, 1] = y;
+                        logger.Error(" table[{0}, {1}]= value.Ghost", x, y);
                     }
                     else
                     {
                         r2 = rndGhost.Next(temp);
                     }
                 }
-            }
+            }//Move to left
             else
-            if (r2 == 2)
+            if (r2 == 2)//Move to Bot
             {
-
-                if (x > 0 && x < 19 && y > 0 && y < 19)
+                logger.Error("Move to Bot");
+                if (x >= 0 && x < 19 && y >= 0 && y <= 19)
                 {
-                    x += 1;
+                    x += 1; logger.Error("x= " + x);
+                    logger.Error("y= " + y);
                     if (table[x, y] != value.Wall)
                     {
-                        if (table[x, y] == value.Eat)
+                        logger.Error("not wall");
+                        if (LifeAfterGhost2 == 1)
                         {
-                            LifeAfterGhost1 = 1;
-                        }
-                        if (LifeAfterGhost1 == 1)
-                        {
-                            table[x, y] = value.Eat;
-                            LifeAfterGhost1 = 0;
+                            table[x-1, y] = value.Eat;
+                            LifeAfterGhost2 = 0;
+                            logger.Error("table[{0}, {1}] = value.Eat", x-1, y );
+                            logger.Error("LifeAfterGhost2 == 0");
                         }
                         else
                         {
-                            table[x-1, y] = value.Normal;
+                            table[x - 1, y] = value.Normal;
+                            logger.Error("table[{0}, {1}] = value.Normal", x-1, y );
+                            
                         }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost2 = 1;
+                        }
+                        
                         table[x, y] = value.Ghost;
                         GhostsPlases[1, 0] = x;
                         GhostsPlases[1, 1] = y;
+                        logger.Error(" table[{0}, {1}]= value.Ghost", x, y);
                     }
                     else
                     {
                         r2 = rndGhost.Next(temp);
                     }
                 }
-            }
+            } //Move to Bot
             else
             if (r2 == 3)
             {
-
-                if (x > 0 && x < 19 && y > 0 && y < 19)
+                logger.Error("Move to Right");
+                if (x >= 0 && x <= 19 && y >= 0 && y < 19)
                 {
-                    y += 1;
+                    y += 1; logger.Error("x= " + x);
+                    logger.Error("y= " + y);
                     if (table[x, y] != value.Wall)
                     {
-                        if (table[x, y] == value.Eat)
+                        logger.Error("not wall");
+                        if (LifeAfterGhost2 == 1)
                         {
-                            LifeAfterGhost1 = 1;
-                        }
-                        if (LifeAfterGhost1 == 1)
-                        {
-                            table[x, y] = value.Eat;
-                            LifeAfterGhost1 = 0;
+                            table[x, y-1] = value.Eat;
+                            LifeAfterGhost2 = 0;
+                            logger.Error("table[{0}, {1}] = value.Eat", x, y-1);
+                            logger.Error("LifeAfterGhost2 == 0");
                         }
                         else
                         {
-                            table[x, y-1] = value.Normal;
+                            table[x, y - 1] = value.Normal;
+                            logger.Error("table[{0}, {1}] = value.Normal", x, y - 1);
                         }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost2 = 1;
+                            logger.Error("LifeAfterGhost2 == 1");
+                        }
+                        
                         table[x, y] = value.Ghost;
                         GhostsPlases[1, 0] = x;
                         GhostsPlases[1, 1] = y;
+                        logger.Error(" table[{0}, {1}]= value.Ghost", x, y);
                     }
                     else
                     {
@@ -708,54 +559,119 @@ namespace PacmanWinForm2
         }
         public static void Ghost3Move()
         {
+            
             Sell value = new Sell();
             int x = GhostsPlases[2, 0];
             int y = GhostsPlases[2, 1];
-            if (x - 1 == 0 || x == 0)
+            if (x == 0)
             {
-                r3 = 2;
+                do
+                {
+                    r3 = rndGhost.Next(temp);
+                } while (r3 == 0);
+                LifeAfterGhost3 = 0; logger.Warn("Направление -" + r1);
             }
             else
-            if (y - 1 == 0 || y == 0)
+             if (y == 0)
             {
-                r3 = 3;
+                do
+                {
+                    r3 = rndGhost.Next(temp);
+                } while (r3 == 1);
+                LifeAfterGhost3 = 0; logger.Warn("Направление -" + r1);
             }
             else
-            if (x + 1 == 19 || x == 19)
+             if (x == 19)
             {
-                r3 = 0;
+                do
+                {
+                    r3 = rndGhost.Next(temp);
+                } while (r3 == 2);
+                LifeAfterGhost3 = 0; logger.Warn("Направление -" + r1);
             }
             else
-            if (y + 1 == 19 || y == 19)
+             if (y == 19)
             {
-                r3 = 1;
+                do
+                {
+                    r3 = rndGhost.Next(temp);
+                } while (r3 == 3);
+                LifeAfterGhost3 = 0; logger.Warn("Направление -" + r1);
             }
 
-            if (r3 == 0)
+            if (r3 == 0)//Move to Top
             {
-
-                if (x > 0 && x < 19 && y > 0 && y < 19)
+                logger.Warn("Move to Top");
+                if (x > 0 && x <= 19 && y >= 0 && y <= 19)
                 {
                     x -= 1;
+                    logger.Warn("x= " + x);
+                    logger.Warn("y= " + y);
                     if (table[x, y] != value.Wall)
                     {
-                        if (table[x, y] == value.Eat)
+                        logger.Warn("not wall");
+                        if (LifeAfterGhost3 == 1)
                         {
-                            LifeAfterGhost1 = 1;
-                        }
-                        if (LifeAfterGhost1 == 1)
-                        {
-                            table[x, y] = value.Eat;
-                            LifeAfterGhost1 = 0;
+                            table[x + 1, y] = value.Eat;
+                            LifeAfterGhost3 = 0;
+                            logger.Warn("table[{0}, {1}] = value.Eat", x + 1, y);
+                            logger.Warn("LifeAfterGhost3 == 0");
                         }
                         else
                         {
-                            table[x + 1, y] = value.Normal;
+                            table[x + 1, y] = value.Normal; logger.Warn("table[{0}, {1}] = value.Normal", x + 1, y);
+                        }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost3 = 1; logger.Warn(" LifeAfterGhost3 = 1");
+                        }
+
+
+                        table[x, y] = value.Ghost;
+                        GhostsPlases[2, 0] = x;
+                        GhostsPlases[2, 1] = y;
+                        logger.Warn(" table[{0}, {1}]= value.Ghost", x, y);
+                    }
+                    else
+                    {
+                        r3 = rndGhost.Next(temp);
+                    }
+                }
+            }//Move to Top
+            else
+            if (r3 == 1)
+            {
+                logger.Warn("Move to Left");
+                if (x >= 0 && x <= 19 && y >0 && y <= 19)
+                {
+                    y -= 1;
+                    logger.Warn("x= " + x);
+                    logger.Warn("y= " + y);
+                    if (table[x, y] != value.Wall)
+                    {
+                        logger.Warn("not wall");
+                        if (LifeAfterGhost3 == 1)
+                        {
+                            table[x, y + 1] = value.Eat;
+                            LifeAfterGhost3 = 0;
+                            logger.Warn("table[{0}, {1}] = value.Eat", x, y + 1);
+                            logger.Warn("LifeAfterGhost3 == 0");
+                        }
+                        else
+                        {
+                            table[x, y + 1] = value.Normal;
+                            logger.Warn("table[{0}, {1}] = value.Normal", x, y + 1);
+
+                        }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost3 = 1; logger.Warn(" LifeAfterGhost3 = 1");
                         }
 
                         table[x, y] = value.Ghost;
                         GhostsPlases[2, 0] = x;
                         GhostsPlases[2, 1] = y;
+                        logger.Warn(" table[{0}, {1}]= value.Ghost", x, y);
                     }
                     else
                     {
@@ -764,94 +680,76 @@ namespace PacmanWinForm2
                 }
             }//Move to left
             else
-            if (r3 == 1)
-            {
-
-                if (x > 0 && x < 19 && y > 0 && y < 19)
-                {
-                    y -= 1;
-                    if (table[x, y] != value.Wall)
-                    {
-                        if (table[x, y] == value.Eat)
-                        {
-                            LifeAfterGhost1 = 1;
-                        }
-                        if (LifeAfterGhost1 == 1)
-                        {
-                            table[x, y] = value.Eat;
-                            LifeAfterGhost1 = 0;
-                        }
-                        else
-                        {
-                            table[x, y + 1] = value.Normal;
-                        }
-                        table[x, y] = value.Ghost;
-                        GhostsPlases[2, 0] = x;
-                        GhostsPlases[2, 1] = y;
-                    }
-                    else
-                    {
-                        r3 = rndGhost.Next(temp);
-                    }
-                }
-            }
-            else
             if (r3 == 2)
             {
-
-                if (x > 0 && x < 19 && y > 0 && y < 19)
+                logger.Warn("Move to Right");
+                if (x >= 0 && x < 19 && y >= 0 && y <= 19)
                 {
                     x += 1;
+                    logger.Warn("x= " + x);
+                    logger.Warn("y= " + y);
                     if (table[x, y] != value.Wall)
                     {
-                        if (table[x, y] == value.Eat)
+                        logger.Warn("not wall");
+                        if (LifeAfterGhost3 == 1)
                         {
-                            LifeAfterGhost1 = 1;
-                        }
-                        if (LifeAfterGhost1 == 1)
-                        {
-                            table[x, y] = value.Eat;
-                            LifeAfterGhost1 = 0;
+                            table[x - 1, y] = value.Eat;
+                            LifeAfterGhost3 = 0;
+                            logger.Warn("table[{0}, {1}] = value.Eat", x-1, y);
+                            logger.Warn("LifeAfterGhost3 == 0");
                         }
                         else
                         {
-                            table[x-1, y] = value.Normal;
+                            table[x - 1, y] = value.Normal; logger.Warn("table[{0}, {1}] = value.Normal", x-1, y );
                         }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost3 = 1; logger.Warn(" LifeAfterGhost3 = 1");
+                        }
+
                         table[x, y] = value.Ghost;
                         GhostsPlases[2, 0] = x;
                         GhostsPlases[2, 1] = y;
+                        logger.Warn(" table[{0}, {1}]= value.Ghost", x, y);
                     }
                     else
                     {
                         r3 = rndGhost.Next(temp);
                     }
                 }
-            }
+            }//Move to Bot
             else
             if (r3 == 3)
             {
-
-                if (x > 0 && x < 19 && y > 0 && y < 19)
+                logger.Warn("Move to Right");
+                if (x >= 0 && x <= 19 && y >= 0 && y < 19)
                 {
                     y += 1;
+                    logger.Warn("x= " + x);
+                    logger.Warn("y= " + y);
                     if (table[x, y] != value.Wall)
                     {
-                        if (table[x, y] == value.Eat)
+                        logger.Warn("not wall");
+                        if (LifeAfterGhost3 == 1)
                         {
-                            LifeAfterGhost1 = 1;
-                        }
-                        if (LifeAfterGhost1 == 1)
-                        {
-                            table[x, y] = value.Eat;
-                            LifeAfterGhost1 = 0;
+                            table[x, y - 1] = value.Eat;
+                            LifeAfterGhost3 = 0;
+                            logger.Warn("table[{0}, {1}] = value.Eat", x, y + 1);
+                            logger.Warn("LifeAfterGhost3 == 0");
                         }
                         else
                         {
-                            table[x, y-1] = value.Normal;
+                            table[x, y - 1] = value.Normal; logger.Warn("table[{0}, {1}] = value.Normal", x, y + 1);
                         }
+                        if (table[x, y] == value.Eat)
+                        {
+                            LifeAfterGhost3 = 1; logger.Warn(" LifeAfterGhost3 = 1");
+                        }
+
                         table[x, y] = value.Ghost;
                         GhostsPlases[2, 0] = x;
                         GhostsPlases[2, 1] = y;
+                        logger.Warn(" table[{0}, {1}]= value.Ghost", x, y);
                     }
                     else
                     {
@@ -866,22 +764,84 @@ namespace PacmanWinForm2
         {
             InitializeComponent();
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        public static void DrawWall(int[,] table)
         {
-
             Sell value = new Sell();
             Random r1 = new Random();
             int a = 0;
             int b = 0;
-            for (int i = 0; i < 50; i++)
+            int[,] TryMestake = new int[3, 3];
+            int count = 0;
+            int remake = 0;
+            while (true)
             {
-                a = r1.Next(20);
+                
+                for (int i = 0; i < 75; i++)
+                {
+                    a = r1.Next(20);
 
-                b = r1.Next(20);
+                    b = r1.Next(20);
 
-                table[a, b] = value.Wall;
+                    table[a, b] = value.Wall;
+                }
+                for (int i = 0; i < table.GetLength(0)-1; i++)
+                {
+                    for (int j = 0; j < table.GetLength(1)-1; j++)
+                    {
+                        if (i!=0 && j!=0 && i != table.Length - 1 && j != table.Length - 1)
+                        {
+                            count = 0;
+                            for (int k = 0; k < 3; k++)
+                            {
+                                for (int h = 0; h < 3; h++)
+                                {                                                                     
+                                    if (table[k, h] == value.Wall)
+                                    {
+                                        count++;
+                                    }
+                                    if (count == 9)
+                                    {
+                                        remake = remake + 1;
+                                        continue;
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+                if (remake == 0)
+                {
+                    break;
+                  
+                }
+                else
+                {
+                    for (int i = 0; i < table.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < table.GetLength(1); j++)
+                        {
+                            table[i, j] = 0;
+                        }
+                    }
+                }
             }
+
+
+
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+           
+       logger.Info("E boy");
+            Sell value = new Sell();
+            Random r1 = new Random();
+            int a = 0;
+            int b = 0;
+
+            DrawWall(table);
+
+
             for (int i = 0; i < 10; i++)
             {
                 a = r1.Next(20);
@@ -920,7 +880,15 @@ namespace PacmanWinForm2
                 {
                     i--;
                 }
-
+                for (int u = 0; u < table.GetLength(0); u++)
+                {
+                    if (table[u,0]!=value.Wall)
+                    {
+                        PacmanX = u;
+                        PacmanY = 0;
+                        break;
+                    }
+                }
             }
             button1.Enabled = false;
             timer1.Enabled = true;
@@ -931,23 +899,23 @@ namespace PacmanWinForm2
         {
             var handle = this.Handle;
             DrawTable(table, handle);
-            new Thread(Ghost1Move).Start();
-            new Thread(Ghost2Move).Start();
-            new Thread(Ghost3Move).Start();
+            Ghost1Move();
+            Ghost2Move();
+            Ghost3Move();
+            
 
-
-            //table = Move(pressedKey, table, ref X, ref Y);
-            if (colvoOfEat == 0)
-            {
-                Console.WriteLine("Congratulations");
-                return;
-            }
+                //table = Move(pressedKey, table, ref X, ref Y);
+                if (colvoOfEat == 0)
+                {
+                    Console.WriteLine("Congratulations");
+                    return;
+                }
 
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-
+            Move1(e);
 
         }
     }

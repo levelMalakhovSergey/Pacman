@@ -12,5 +12,6 @@ namespace PacmanWinForm2
         public  int Eat = 1;
         public  int Ghost = 2;
         public int Normal = 0;
+        public int Pacman = 3;
     }
 }
